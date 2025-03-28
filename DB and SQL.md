@@ -1,5 +1,3 @@
-Here’s the content converted into a properly formatted `README.md` file:
-
 ```markdown
 # SQL Guide
 **Author**: Arnab Dana
@@ -268,6 +266,209 @@ ORDER BY
     ELSE City
 END);
 ```
+Here’s the content converted into a properly formatted `README.md` file using Markdown syntax:
+
+```markdown
+# SQL Regex and Operators Guide
+
+## 4. Regex
+
+SQL supports **regular expressions (regex)** in some database systems, like MySQL, PostgreSQL, and Oracle, for pattern matching beyond `LIKE`. Below are commonly used regex patterns in SQL:
+
+### Basic Wildcards (`LIKE` Operator)
+
+| Symbol | Description                        | Example                              |
+|--------|------------------------------------|--------------------------------------|
+| `%`    | Matches zero or more characters    | `WHERE name LIKE 'A%'` (Names starting with 'A') |
+| `_`    | Matches a single character         | `WHERE name LIKE 'J_n'` (Matches 'Jon', 'Jan', etc.) |
+| `-`    | Represents any single character within the specified range | `WHERE CustomerName LIKE '[a-f]%';` (Returns all customers starting with "a", "b", "c", "d", "e", or "f") |
+
+### Regex Patterns (`REGEXP` or `SIMILAR TO`) *(Depends on SQL Database)*
+
+| Regex Pattern | Description                           | Example                                      |
+|---------------|---------------------------------------|----------------------------------------------|
+| `^`           | Start of string                       | `WHERE name REGEXP '^A'` (Names starting with 'A') |
+| `$`           | End of string                         | `WHERE email REGEXP 'gmail.com$'` (Emails ending with 'gmail.com') |
+| `.`           | Matches any single character          | `WHERE name REGEXP 'J.n'` (Matches 'Jon', 'Jan', etc.) |
+| `[abc]`       | Matches any character in brackets     | `WHERE name REGEXP '[JKT]ohn'` (Matches 'John', 'Kohn', or 'Tohn') |
+| `[^abc]`      | Matches any character *not* in brackets | `WHERE name REGEXP '[^JK]ohn'` (Excludes 'John' & 'Kohn') |
+| `[a-z]`       | Matches any character in a range      | `WHERE name REGEXP '[a-d]an'` (Matches 'Aman', 'Bman', etc.) |
+| `*`           | Matches 0 or more occurrences         | `WHERE name REGEXP 'A*'` (Matches '', 'A', 'AA', etc.) |
+| `+`           | Matches 1 or more occurrences         | `WHERE name REGEXP 'A+'` (Matches 'A', 'AA', but not '') |
+| `?`           | Matches 0 or 1 occurrence             | `WHERE name REGEXP 'colou?r'` (Matches 'color' & 'colour') |
+| `{n,m}`       | Matches between `n` and `m` occurrences | `WHERE name REGEXP 'A{2,4}'` (Matches 'AA', 'AAA', or 'AAAA') |
+
+### Special SQL-Specific Regex Usage
+
+| Database   | Regex Support             | Example                                           |
+|------------|---------------------------|--------------------------------------------------|
+| MySQL      | `REGEXP` operator         | `SELECT * FROM users WHERE name REGEXP '^[A-Z].*son$';` |
+| PostgreSQL | `~` (case-sensitive), `~*` (case-insensitive) | `SELECT * FROM users WHERE name ~ '^John';` |
+| Oracle     | `REGEXP_LIKE()` function  | `SELECT * FROM employees WHERE REGEXP_LIKE(name, '^A');` |
+
+### Coding Example
+
+#### Basic Wildcards with `LIKE`
+
+| Use Case                     | Query                                  | Description                          |
+|------------------------------|----------------------------------------|--------------------------------------|
+| Find names starting with 'A' | `SELECT * FROM users WHERE name LIKE 'A%';` | Matches names like 'Alice', 'Adam' |
+| Find names with 'o' as second letter | `SELECT * FROM users WHERE name LIKE '_o%';` | Matches 'John', 'Tony' |
+| Find names ending with 'son' | `SELECT * FROM users WHERE name LIKE '%son';` | Matches 'Jackson', 'Emerson' |
+
+#### Using `REGEXP` for Advanced Matching
+
+| Use Case                       | Query                                       | Description                          |
+|--------------------------------|---------------------------------------------|--------------------------------------|
+| Names starting with 'A'        | `SELECT * FROM users WHERE name REGEXP '^A';` | Matches 'Alice', 'Andrew'          |
+| Names ending with 'n'          | `SELECT * FROM users WHERE name REGEXP 'n$';` | Matches 'John', 'Ethan'            |
+| Names containing 'o'           | `SELECT * FROM users WHERE name REGEXP 'o';` | Matches 'John', 'Tony'             |
+| Names with exactly 5 letters   | `SELECT * FROM users WHERE name REGEXP '^.{5}$';` | Matches 'James', 'David'       |
+| Names containing 'a', 'b', or 'c' | `SELECT * FROM users WHERE name REGEXP '[abc]';` | Matches 'Alice', 'Bob', 'Charlie' |
+| Names not containing 'x' or 'z' | `SELECT * FROM users WHERE name REGEXP '^[^xz]+$';` | Excludes 'Xavier', 'Zane'     |
+| Names with double 'o'          | `SELECT * FROM users WHERE name REGEXP 'o{2}';` | Matches 'Cooper', 'Brooklyn'     |
+| Emails from Gmail              | `SELECT * FROM users WHERE email REGEXP 'gmail\\.com$';` | Matches emails ending in 'gmail.com' |
+
+#### Case-Insensitive Matching in MySQL (`BINARY` and `LOWER()` for workaround)
+
+| Use Case                     | Query                                       | Description                          |
+|------------------------------|---------------------------------------------|--------------------------------------|
+| Case-insensitive match for 'john' | `SELECT * FROM users WHERE LOWER(name) REGEXP 'john';` | Matches 'John', 'john'        |
+| Case-sensitive match for 'John' | `SELECT * FROM users WHERE name REGEXP BINARY 'John';` | Matches 'John', but not 'john' |
+
+## 5. SQL Operators
+
+| **Operator Type** | **Operator** | **Example**                              | **Description**                          |
+|-------------------|--------------|------------------------------------------|------------------------------------------|
+| **Arithmetic**    | `+`          | `SELECT 10 + 5;`                        | Returns `15`                            |
+|                   | `-`          | `SELECT 10 - 5;`                        | Returns `5`                             |
+|                   | `*`          | `SELECT 10 * 5;`                        | Returns `50`                            |
+|                   | `/`          | `SELECT 10 / 5;`                        | Returns `2`                             |
+|                   | `%`          | `SELECT 10 % 3;`                        | Returns `1` (remainder)                 |
+| **Comparison**    | `=`          | `SELECT * FROM employees WHERE salary = 50000;` | Selects employees with a salary of 50,000 |
+|                   | `!=` or `<>` | `SELECT * FROM employees WHERE age <> 30;` | Selects employees not 30 years old    |
+|                   | `>`          | `SELECT * FROM products WHERE price > 100;` | Selects products priced above 100     |
+|                   | `<`          | `SELECT * FROM orders WHERE quantity < 50;` | Selects orders with quantity below 50 |
+|                   | `>=`         | `SELECT * FROM students WHERE marks >= 80;` | Selects students scoring 80 or above  |
+|                   | `<=`         | `SELECT * FROM books WHERE pages <= 300;` | Selects books with 300 pages or less  |
+| **Logical**       | `AND`        | `SELECT * FROM customers WHERE city = 'New York' AND age > 25;` | Selects customers from New York older than 25 |
+|                   | `OR`         | `SELECT * FROM employees WHERE department = 'IT' OR department = 'HR';` | Selects employees in IT or HR department |
+|                   | `NOT`        | `SELECT * FROM orders WHERE NOT status = 'Cancelled';` | Selects orders that are not cancelled |
+| **Bitwise**       | `&`          | `SELECT 5 & 3;`                         | Returns `1` (Bitwise AND)              |
+|                   | `|`          | `SELECT 5 | 3;`                         | Returns `7` (Bitwise OR)               |
+|                   | `^`          | `SELECT 5 ^ 3;`                         | Returns `6` (Bitwise XOR)              |
+| **Assignment**    | `:=` or `=`  | `SET @x := 10;`                        | Assigns `10` to `@x` (MySQL)           |
+| **Set**           | `IN`         | `SELECT * FROM employees WHERE department IN ('HR', 'Finance');` | Selects employees in HR or Finance |
+|                   | `NOT IN`     | `SELECT * FROM students WHERE class NOT IN ('10A', '10B');` | Selects students not in class 10A or 10B |
+| **Pattern Matching** | `LIKE`    | `SELECT * FROM customers WHERE name LIKE 'A%';` | Selects names starting with 'A'      |
+|                   | `NOT LIKE`   | `SELECT * FROM customers WHERE name NOT LIKE '%son';` | Selects names that do not end with 'son' |
+| **Null Handling** | `IS NULL`    | `SELECT * FROM employees WHERE manager_id IS NULL;` | Selects employees without a manager  |
+|                   | `IS NOT NULL`| `SELECT * FROM employees WHERE salary IS NOT NULL;` | Selects employees with a salary value |
+| **Existence**     | `EXISTS`     | `SELECT * FROM customers WHERE EXISTS (SELECT 1 FROM orders WHERE customers.id = orders.customer_id);` | Selects customers who have placed orders |
+|                   | `NOT EXISTS` | `SELECT * FROM customers WHERE NOT EXISTS (SELECT 1 FROM orders WHERE customers.id = orders.customer_id);` | Selects customers without orders |
+| **Range**         | `BETWEEN`    | `SELECT * FROM products WHERE price BETWEEN 50 AND 100;` | Selects products priced between 50 and 100 |
+|                   | `NOT BETWEEN`| `SELECT * FROM students WHERE marks NOT BETWEEN 40 AND 80;` | Selects students scoring outside 40-80 |
+| **String Concatenation** | `CONCAT()` | `SELECT CONCAT('Hello', ' ', 'World');` (MySQL) | Returns `Hello World`              |
+| **Other Special Operators** | `UNION` | `SELECT name FROM customers UNION SELECT name FROM suppliers;` | Combines unique customer and supplier names |
+|                   | `UNION ALL`  | `SELECT name FROM customers UNION ALL SELECT name FROM suppliers;` | Combines customer and supplier names, including duplicates |
+
+| Operator Type | Operator | Example                                      | Description                                  |
+|---------------|----------|----------------------------------------------|----------------------------------------------|
+| Logical       | `ALL`    | `SELECT * FROM Employees WHERE Salary > ALL (SELECT Salary FROM Interns);` | TRUE if all subquery values meet the condition |
+| Logical       | `AND`    | `SELECT * FROM Employees WHERE Age > 30 AND Department = 'IT';` | TRUE if all conditions separated by AND are TRUE |
+| Logical       | `ANY`    | `SELECT * FROM Employees WHERE Salary > ANY (SELECT Salary FROM Interns);` | TRUE if any subquery values meet the condition |
+| Comparison    | `BETWEEN`| `SELECT * FROM Employees WHERE Salary BETWEEN 30000 AND 70000;` | TRUE if operand is within the range         |
+| Logical       | `EXISTS` | `SELECT * FROM Employees WHERE EXISTS (SELECT 1 FROM Departments WHERE Employees.DeptID = Departments.ID);` | TRUE if subquery returns one or more records |
+| Comparison    | `IN`     | `SELECT * FROM Employees WHERE Department IN ('HR', 'IT', 'Finance');` | TRUE if operand equals one in list         |
+| Pattern Matching | `LIKE` | `SELECT * FROM Employees WHERE Name LIKE 'A%';` | TRUE if operand matches a pattern          |
+| Logical       | `NOT`    | `SELECT * FROM Employees WHERE NOT (Department = 'HR');` | Displays record if condition(s) is NOT TRUE |
+| Logical       | `OR`     | `SELECT * FROM Employees WHERE Age < 25 OR Experience > 5;` | TRUE if any conditions separated by OR are TRUE |
+| Logical       | `SOME`   | `SELECT * FROM Employees WHERE Salary > SOME (SELECT Salary FROM Interns);` | TRUE if any subquery values meet the condition |
+
+## 6. DDL (Data Definition Language)
+
+`CREATE`, `ALTER`, `DROP`, `TRUNCATE`
+
+### Data Definition Language (DDL) in SQL
+
+DDL commands are used to define and modify the structure of database objects such as tables, indexes, and schemas.
+
+### 1. CREATE – Creates a new database object (e.g., table, database, index)
+
+#### Example: Create a Table
+```sql
+CREATE TABLE Employees (
+    EmployeeID INT PRIMARY KEY,
+    Name VARCHAR(100),
+    Age INT,
+    Department VARCHAR(50)
+);
 ```
 
-This `README.md` file is now properly formatted with Markdown syntax, including headings, tables, code blocks, and anchor links for easy navigation. You can copy this content into a file named `README.md` and use it in a GitHub repository or similar platform. Let me know if you need further adjustments!
+#### Example: Create a Database
+```sql
+CREATE DATABASE CompanyDB;
+```
+
+#### Example: Create an Index
+```sql
+CREATE INDEX idx_employee_name ON Employees(Name);
+```
+
+### 2. ALTER – Modifies the structure of an existing table or other database objects
+
+#### Example: Add a Column
+```sql
+ALTER TABLE Employees ADD Salary DECIMAL(10,2);
+```
+
+#### Example: Modify Column Data Type
+```sql
+ALTER TABLE Employees MODIFY Age SMALLINT;
+```
+
+#### Example: Rename a Column
+```sql
+ALTER TABLE Employees RENAME COLUMN Name TO FullName;
+```
+
+#### Example: Drop a Column
+```sql
+ALTER TABLE Employees DROP COLUMN Department;
+```
+
+### 3. DROP – Deletes database objects permanently
+
+#### Example: Drop a Table
+```sql
+DROP TABLE Employees;
+```
+
+#### Example: Drop a Database
+```sql
+DROP DATABASE CompanyDB;
+```
+
+#### Example: Drop an Index
+```sql
+DROP INDEX idx_employee_name ON Employees;
+```
+
+### 4. TRUNCATE – Removes all rows from a table without logging individual row deletions
+
+#### Example: Truncate a Table
+```sql
+TRUNCATE TABLE Employees;
+```
+
+> **Note:** Unlike `DROP`, `TRUNCATE` keeps the table structure intact but deletes all records efficiently.
+
+### 5. RENAME – Renames an existing database object
+
+#### Example: Rename a Table
+```sql
+RENAME TABLE Employees TO Staff;
+```
+
+These are the core **DDL (Data Definition Language) commands** used to define and manage database structures.
+```
